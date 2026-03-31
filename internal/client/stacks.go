@@ -103,13 +103,13 @@ type RedeployPayload struct {
 	PullImage                 bool   `json:"pullImage"`
 }
 
-func (c *Client) RedeployStack(stackID int, payload RedeployPayload) error {
+func (c *Client) RedeployStack(stackID, endpointID int, payload RedeployPayload) error {
 	body, err := json.Marshal(payload)
 	if err != nil {
 		return fmt.Errorf("failed to marshal payload: %w", err)
 	}
 
-	url := fmt.Sprintf("%s/api/stacks/%d/git/redeploy", c.BaseURL, stackID)
+	url := fmt.Sprintf("%s/api/stacks/%d/git/redeploy?endpointId=%d", c.BaseURL, stackID, endpointID)
 	req, err := http.NewRequest("PUT", url, bytes.NewReader(body))
 	if err != nil {
 		return err

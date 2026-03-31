@@ -37,7 +37,7 @@ var redeployCmd = &cobra.Command{
 			payload.RepositoryGitCredentialID = cfg.GitCredentialID
 		}
 
-		if err := api.RedeployStack(stack.ID, payload); err != nil {
+		if err := api.RedeployStack(stack.ID, stack.EndpointID, payload); err != nil {
 			return err
 		}
 
