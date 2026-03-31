@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"text/tabwriter"
 
@@ -39,15 +40,19 @@ var envCmd = &cobra.Command{
 			return err
 		}
 
-		// No subcommand — list env vars
+		// No subcommand — list env vars (sorted)
 		if len(args) == 1 {
 			if len(detail.Env) == 0 {
 				fmt.Printf("No environment variables set for stack '%s'.\n", stackName)
 				return nil
 			}
+			sorted := make([]client.EnvVar, len(detail.Env))
+			copy(sorted, detail.Env)
+			sort.Slice(sorted, func(i, j int) bool { return sorted[i].Name < sorted[j].Name })
+
 			w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
 			fmt.Fprintln(w, "NAME\tVALUE")
-			for _, e := range detail.Env {
+			for _, e := range sorted {
 				fmt.Fprintf(w, "%s\t%s\n", e.Name, e.Value)
 			}
 			return w.Flush()
@@ -85,10 +90,16 @@ var envCmd = &cobra.Command{
 			return fmt.Errorf("unknown action %q, expected 'set' or 'unset'", action)
 		}
 
-		// Build updated env list
+		// Build sorted env list
+		keys := make([]string, 0, len(envMap))
+		for k := range envMap {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+
 		var envList []client.EnvVar
-		for k, v := range envMap {
-			envList = append(envList, client.EnvVar{Name: k, Value: v})
+		for _, k := range keys {
+			envList = append(envList, client.EnvVar{Name: k, Value: envMap[k]})
 		}
 
 		payload := client.UpdateStackPayload{
