@@ -98,6 +98,19 @@ func (c *Client) CreateStack(endpointID int, payload CreateStackPayload) (*Stack
 	return &stack, nil
 }
 
+func (c *Client) DeleteStack(stackID, endpointID int) error {
+	url := fmt.Sprintf("%s/api/stacks/%d?endpointId=%d", c.BaseURL, stackID, endpointID)
+	req, err := http.NewRequest("DELETE", url, nil)
+	if err != nil {
+		return err
+	}
+
+	if err := c.do(req, nil); err != nil {
+		return fmt.Errorf("failed to delete stack: %w", err)
+	}
+	return nil
+}
+
 type RedeployPayload struct {
 	RepositoryReferenceName   string `json:"repositoryReferenceName"`
 	RepositoryAuthentication  bool   `json:"repositoryAuthentication"`
