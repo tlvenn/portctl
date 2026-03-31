@@ -22,9 +22,23 @@ var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all stacks with status, image freshness, and deployed version",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		stacks, err := api.ListStacks()
+		// Resolve which endpoint we're targeting
+		endpointID, err := api.ResolveEndpointID(cfg.EndpointID)
 		if err != nil {
 			return err
+		}
+
+		allStacks, err := api.ListStacks()
+		if err != nil {
+			return err
+		}
+
+		// Filter to stacks on the target endpoint only
+		var stacks []client.Stack
+		for _, s := range allStacks {
+			if s.EndpointID == endpointID {
+				stacks = append(stacks, s)
+			}
 		}
 
 		if len(stacks) == 0 {
