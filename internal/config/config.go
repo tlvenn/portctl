@@ -16,6 +16,7 @@ type Config struct {
 	GitBranch       string
 	GitCredentialID int
 	RepoPath        string
+	FilesystemPath  string
 }
 
 func Load() (*Config, error) {
@@ -46,9 +47,10 @@ func Load() (*Config, error) {
 	cfg := &Config{
 		PortainerURL: strings.TrimRight(portainerURL, "/"),
 		APIKey:       apiKey,
-		GitRepo:      os.Getenv("PORTCTL_GIT_REPO"),
-		GitBranch:    os.Getenv("PORTCTL_GIT_BRANCH"),
-		RepoPath:     os.Getenv("PORTCTL_REPO_PATH"),
+		GitRepo:        os.Getenv("PORTCTL_GIT_REPO"),
+		GitBranch:      os.Getenv("PORTCTL_GIT_BRANCH"),
+		RepoPath:       os.Getenv("PORTCTL_REPO_PATH"),
+		FilesystemPath: os.Getenv("PORTCTL_FILESYSTEM_PATH"),
 	}
 
 	if cfg.GitBranch == "" {

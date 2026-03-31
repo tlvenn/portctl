@@ -85,6 +85,7 @@ var deployCmd = &cobra.Command{
 			ComposeFile:            stackName + "/docker-compose.yml",
 			AutoUpdate:             &client.AutoUpdate{Webhook: webhookID},
 			SupportRelativePath:    true,
+			FilesystemPath:         cfg.FilesystemPath,
 		}
 
 		if cfg.GitCredentialID != 0 {
