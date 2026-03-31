@@ -66,6 +66,8 @@ type CreateStackPayload struct {
 	RepositoryGitCredentialID int             `json:"repositoryGitCredentialID,omitempty"`
 	AutoUpdate                *AutoUpdate     `json:"autoUpdate,omitempty"`
 	Env                       []EnvVar        `json:"env,omitempty"`
+	SupportRelativePath       bool            `json:"supportRelativePath"`
+	FilesystemPath            string          `json:"filesystemPath,omitempty"`
 }
 
 type AutoUpdate struct {

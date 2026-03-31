@@ -84,6 +84,7 @@ var deployCmd = &cobra.Command{
 			RepositoryReferenceName: "refs/heads/" + cfg.GitBranch,
 			ComposeFile:            stackName + "/docker-compose.yml",
 			AutoUpdate:             &client.AutoUpdate{Webhook: webhookID},
+			SupportRelativePath:    true,
 		}
 
 		if cfg.GitCredentialID != 0 {
