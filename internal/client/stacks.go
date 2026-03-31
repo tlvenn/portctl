@@ -112,6 +112,57 @@ func (c *Client) DeleteStack(stackID, endpointID int) error {
 	return nil
 }
 
+type StackDetail struct {
+	ID         int        `json:"Id"`
+	Name       string     `json:"Name"`
+	Status     int        `json:"Status"`
+	EndpointID int        `json:"EndpointId"`
+	Env        []EnvVar   `json:"Env"`
+	GitConfig  *GitConfig `json:"GitConfig"`
+}
+
+func (c *Client) GetStack(stackID int) (*StackDetail, error) {
+	url := fmt.Sprintf("%s/api/stacks/%d", c.BaseURL, stackID)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var stack StackDetail
+	if err := c.do(req, &stack); err != nil {
+		return nil, fmt.Errorf("failed to get stack: %w", err)
+	}
+	return &stack, nil
+}
+
+type UpdateStackPayload struct {
+	Env                       []EnvVar    `json:"env"`
+	RepositoryReferenceName   string      `json:"repositoryReferenceName"`
+	RepositoryAuthentication  bool        `json:"repositoryAuthentication"`
+	RepositoryGitCredentialID int         `json:"repositoryGitCredentialID,omitempty"`
+	Prune                     bool        `json:"prune"`
+	PullImage                 bool        `json:"pullImage"`
+}
+
+func (c *Client) UpdateStackEnv(stackID, endpointID int, payload UpdateStackPayload) error {
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("failed to marshal payload: %w", err)
+	}
+
+	// Use the git-specific update endpoint for git-backed stacks
+	url := fmt.Sprintf("%s/api/stacks/%d/git?endpointId=%d", c.BaseURL, stackID, endpointID)
+	req, err := http.NewRequest("POST", url, bytes.NewReader(body))
+	if err != nil {
+		return err
+	}
+
+	if err := c.do(req, nil); err != nil {
+		return fmt.Errorf("failed to update stack env: %w", err)
+	}
+	return nil
+}
+
 type RedeployPayload struct {
 	RepositoryReferenceName   string `json:"repositoryReferenceName"`
 	RepositoryAuthentication  bool   `json:"repositoryAuthentication"`
