@@ -164,10 +164,11 @@ func (c *Client) UpdateStackEnv(stackID, endpointID int, payload UpdateStackPayl
 }
 
 type RedeployPayload struct {
-	RepositoryReferenceName   string `json:"repositoryReferenceName"`
-	RepositoryAuthentication  bool   `json:"repositoryAuthentication"`
-	RepositoryGitCredentialID int    `json:"repositoryGitCredentialID,omitempty"`
-	PullImage                 bool   `json:"pullImage"`
+	RepositoryReferenceName   string   `json:"repositoryReferenceName"`
+	RepositoryAuthentication  bool     `json:"repositoryAuthentication"`
+	RepositoryGitCredentialID int      `json:"repositoryGitCredentialID,omitempty"`
+	PullImage                 bool     `json:"pullImage"`
+	Env                       []EnvVar `json:"env"`
 }
 
 func (c *Client) RedeployStack(stackID, endpointID int, payload RedeployPayload) error {

@@ -26,9 +26,16 @@ var redeployCmd = &cobra.Command{
 			return fmt.Errorf("stack %q not found", stackName)
 		}
 
+		// Fetch current stack detail to preserve env vars
+		detail, err := api.GetStack(stack.ID)
+		if err != nil {
+			return err
+		}
+
 		payload := client.RedeployPayload{
 			RepositoryReferenceName: "refs/heads/" + cfg.GitBranch,
 			PullImage:               true,
+			Env:                     detail.Env,
 		}
 
 		// Include git credentials if configured
