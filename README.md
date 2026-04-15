@@ -63,7 +63,7 @@ NAME            STATUS  IMAGES      CONTAINERS                       UPDATED    
 traefik         active  outdated    1 running / 0 stopped / 0 error  2025-12-03 09:22  e039da3
 jellyfin        active  outdated    1 running / 1 stopped / 0 error  2026-02-05 17:54  1b4b727
 sonarr          active  outdated    1 running / 1 stopped / 0 error  2025-12-03 16:46  2add468
-sabnzbd         active  up to date  1 running / 1 stopped / 0 error  -                 02fd750
+radarr          active  up to date  1 running / 1 stopped / 0 error  -                 02fd750
 ```
 
 The **IMAGES** column compares local image digests against remote registries to detect when a newer `:latest` image has been pushed.
@@ -79,11 +79,11 @@ portctl list --no-images
 Create a git-backed stack in Portainer with automatic webhook registration:
 
 ```sh
-portctl deploy sabnzbd
+portctl deploy radarr
 ```
 
 ```
-Stack 'sabnzbd' deployed successfully (ID: 30).
+Stack 'radarr' deployed successfully (ID: 30).
 Webhook ID: 1b1a2f93-a1d4-4033-9eca-085a27f3c600
 Webhook registered in portainer-webhooks.json
 ```
@@ -101,7 +101,7 @@ The deploy command expects stacks to follow a convention: each stack is a subdir
 your-stacks/
   sonarr/docker-compose.yml
   radarr/docker-compose.yml
-  sabnzbd/docker-compose.yml
+  prowlarr/docker-compose.yml
   portainer-webhooks.json
 ```
 
