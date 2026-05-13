@@ -34,7 +34,7 @@ All configuration is via environment variables. Use a `.envrc` (with [direnv](ht
 | `PORTCTL_GIT_REPO` | — | Git repo URL for stack creation |
 | `PORTCTL_GIT_BRANCH` | `main` | Git branch to deploy from |
 | `PORTCTL_GIT_CREDENTIAL_ID` | — | Portainer git credential ID (run `portctl credentials` to find it) |
-| `PORTCTL_ENDPOINT_ID` | auto-detected | Portainer endpoint ID (auto-discovers first local Docker endpoint) |
+| `PORTCTL_ENDPOINT_ID` | auto-detected | Portainer endpoint ID (auto-discovers first local Docker endpoint). Override per-invocation with `--endpoint <name-or-id>` / `-e`. |
 | `PORTCTL_REPO_PATH` | — | Local path to the stacks repo (for webhook registration in `portainer-webhooks.json`) |
 
 ### Example `.envrc`

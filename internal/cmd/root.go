@@ -10,8 +10,9 @@ import (
 )
 
 var (
-	cfg    *config.Config
-	api    *client.Client
+	cfg              *config.Config
+	api              *client.Client
+	endpointOverride string
 )
 
 var rootCmd = &cobra.Command{
@@ -29,10 +30,19 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
+		cfg.EndpointOverride = endpointOverride
 
 		api = client.New(cfg.PortainerURL, cfg.APIKey)
 		return nil
 	},
+}
+
+func init() {
+	rootCmd.PersistentFlags().StringVarP(
+		&endpointOverride,
+		"endpoint", "e", "",
+		"Portainer endpoint to target — name (e.g. \"proxy\") or numeric ID. Overrides PORTCTL_ENDPOINT_ID.",
+	)
 }
 
 func Execute() {

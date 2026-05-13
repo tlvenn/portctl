@@ -18,7 +18,11 @@ var redeployCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		stackName := args[0]
 
-		stack, err := api.FindStackByName(stackName)
+		filter, err := api.ResolveEndpointFilter(cfg.EndpointID, cfg.EndpointOverride)
+		if err != nil {
+			return err
+		}
+		stack, err := api.FindStackByName(stackName, filter)
 		if err != nil {
 			return err
 		}

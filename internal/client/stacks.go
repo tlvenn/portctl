@@ -44,15 +44,22 @@ func (c *Client) ListStacks() ([]Stack, error) {
 	return stacks, nil
 }
 
-func (c *Client) FindStackByName(name string) (*Stack, error) {
+// FindStackByName returns the first stack with the given name. When
+// `endpointID` is non-zero, the search is scoped to that endpoint —
+// useful when stack names may collide across endpoints.
+func (c *Client) FindStackByName(name string, endpointID int) (*Stack, error) {
 	stacks, err := c.ListStacks()
 	if err != nil {
 		return nil, err
 	}
 	for _, s := range stacks {
-		if s.Name == name {
-			return &s, nil
+		if s.Name != name {
+			continue
 		}
+		if endpointID != 0 && s.EndpointID != endpointID {
+			continue
+		}
+		return &s, nil
 	}
 	return nil, nil
 }
