@@ -23,7 +23,7 @@ var listCmd = &cobra.Command{
 	Short: "List all stacks with status, image freshness, and deployed version",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// Resolve which endpoint we're targeting
-		endpointID, err := api.ResolveEndpointID(cfg.EndpointID)
+		endpointID, err := api.ResolveEndpointID(cfg.EndpointID, cfg.EndpointOverride)
 		if err != nil {
 			return err
 		}

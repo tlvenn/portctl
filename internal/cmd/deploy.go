@@ -56,19 +56,19 @@ var deployCmd = &cobra.Command{
 			}
 		}
 
-		// Check if stack already exists
-		existing, err := api.FindStackByName(stackName)
+		// Resolve endpoint first so the collision check is endpoint-scoped.
+		endpointID, err := api.ResolveEndpointID(cfg.EndpointID, cfg.EndpointOverride)
+		if err != nil {
+			return err
+		}
+
+		// Check if stack already exists on this endpoint
+		existing, err := api.FindStackByName(stackName, endpointID)
 		if err != nil {
 			return err
 		}
 		if existing != nil {
 			return fmt.Errorf("stack %q already exists in Portainer (ID: %d)", stackName, existing.ID)
-		}
-
-		// Resolve endpoint
-		endpointID, err := api.ResolveEndpointID(cfg.EndpointID)
-		if err != nil {
-			return err
 		}
 
 		// Generate webhook UUID

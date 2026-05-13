@@ -37,7 +37,7 @@ var logsCmd = &cobra.Command{
 		}
 
 		// Resolve endpoint
-		endpointID, err := api.ResolveEndpointID(cfg.EndpointID)
+		endpointID, err := api.ResolveEndpointID(cfg.EndpointID, cfg.EndpointOverride)
 		if err != nil {
 			return err
 		}

@@ -9,14 +9,15 @@ import (
 )
 
 type Config struct {
-	PortainerURL    string
-	APIKey          string
-	EndpointID      int
-	GitRepo         string
-	GitBranch       string
-	GitCredentialID int
-	RepoPath        string
-	FilesystemPath  string
+	PortainerURL     string
+	APIKey           string
+	EndpointID       int
+	EndpointOverride string // from --endpoint flag; name or numeric ID; wins over EndpointID
+	GitRepo          string
+	GitBranch        string
+	GitCredentialID  int
+	RepoPath         string
+	FilesystemPath   string
 }
 
 func Load() (*Config, error) {
