@@ -35,11 +35,15 @@ var redeployCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
+		env, err := withEnvFile(detail.Env)
+		if err != nil {
+			return err
+		}
 
 		payload := client.RedeployPayload{
 			RepositoryReferenceName: "refs/heads/" + cfg.GitBranch,
 			PullImage:               true,
-			Env:                     detail.Env,
+			Env:                     env,
 		}
 
 		// Include git credentials if configured
