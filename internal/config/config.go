@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -18,6 +19,7 @@ type Config struct {
 	GitCredentialID  int
 	RepoPath         string
 	FilesystemPath   string
+	EnvFile          string // KEY=VALUE file applied to stack env on deploy and redeploy
 }
 
 func Load() (*Config, error) {
@@ -52,6 +54,12 @@ func Load() (*Config, error) {
 		GitBranch:      os.Getenv("PORTCTL_GIT_BRANCH"),
 		RepoPath:       os.Getenv("PORTCTL_REPO_PATH"),
 		FilesystemPath: os.Getenv("PORTCTL_FILESYSTEM_PATH"),
+		EnvFile:        os.Getenv("PORTCTL_ENV_FILE"),
+	}
+
+	// A relative env file is relative to the repo, like the stack directories
+	if cfg.EnvFile != "" && !filepath.IsAbs(cfg.EnvFile) && cfg.RepoPath != "" {
+		cfg.EnvFile = filepath.Join(cfg.RepoPath, cfg.EnvFile)
 	}
 
 	if cfg.GitBranch == "" {

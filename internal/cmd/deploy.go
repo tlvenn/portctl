@@ -77,6 +77,11 @@ var deployCmd = &cobra.Command{
 			return fmt.Errorf("failed to generate webhook UUID: %w", err)
 		}
 
+		env, err := withEnvFile(nil)
+		if err != nil {
+			return err
+		}
+
 		// Build payload
 		payload := client.CreateStackPayload{
 			Name:                    stackName,
@@ -84,6 +89,7 @@ var deployCmd = &cobra.Command{
 			RepositoryReferenceName: "refs/heads/" + cfg.GitBranch,
 			ComposeFile:            stackName + "/docker-compose.yml",
 			AutoUpdate:             &client.AutoUpdate{Webhook: webhookID},
+			Env:                    env,
 			SupportRelativePath:    true,
 			FilesystemPath:         cfg.FilesystemPath,
 		}

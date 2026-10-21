@@ -36,6 +36,7 @@ All configuration is via environment variables. Use a `.envrc` (with [direnv](ht
 | `PORTCTL_GIT_CREDENTIAL_ID` | — | Portainer git credential ID (run `portctl credentials` to find it) |
 | `PORTCTL_ENDPOINT_ID` | auto-detected | Portainer endpoint ID (auto-discovers first local Docker endpoint). Override per-invocation with `--endpoint <name-or-id>` / `-e`. |
 | `PORTCTL_REPO_PATH` | — | Local path to the stacks repo (for webhook registration in `portainer-webhooks.json`) |
+| `PORTCTL_ENV_FILE` | — | `KEY=VALUE` file (relative to `PORTCTL_REPO_PATH`) applied to the stack env on `deploy` and `redeploy`. See [Shared parameters](#shared-parameters). |
 
 ### Example `.envrc`
 
@@ -114,6 +115,18 @@ portctl redeploy sonarr
 ```
 
 Use this after pushing compose changes or when `portctl list` shows images as **outdated**.
+
+### Shared parameters
+
+When the same stacks run for several organizations, keep their compose files generic (``Host(`app.${DOMAIN}`)``) and put each organization's values in one file of its own repo:
+
+```sh
+# org/org.env
+DOMAIN=example.com
+ZFS_ROOT=rpool/data/example/ops
+```
+
+With `PORTCTL_ENV_FILE=org/org.env`, `deploy` creates the stack with those variables and `redeploy` sets them again, so editing the file and redeploying is enough. Variables the file does not mention are kept: set secrets with `portctl env <stack> set` and they survive.
 
 ### View logs
 
