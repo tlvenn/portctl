@@ -107,14 +107,16 @@ var envCmd = &cobra.Command{
 		}
 
 		payload := client.UpdateStackPayload{
-			Env:       envList,
-			Prune:     false,
-			PullImage: false,
+			Env:        envList,
+			AutoUpdate: detail.AutoUpdate,
+			Prune:      false,
+			PullImage:  false,
 		}
 
 		// Preserve git config for the update
 		if detail.GitConfig != nil {
 			payload.RepositoryReferenceName = detail.GitConfig.ReferenceName
+			payload.TLSSkipVerify = detail.GitConfig.TLSSkipVerify
 		}
 		if cfg.GitCredentialID != 0 {
 			payload.RepositoryAuthentication = true

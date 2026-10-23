@@ -22,6 +22,7 @@ type GitConfig struct {
 	ReferenceName  string `json:"ReferenceName"`
 	ConfigHash     string `json:"ConfigHash"`
 	ConfigFilePath string `json:"ConfigFilePath"`
+	TLSSkipVerify  bool   `json:"TLSSkipVerify"`
 }
 
 func (s Stack) StatusLabel() string {
@@ -126,6 +127,8 @@ type StackDetail struct {
 	EndpointID int        `json:"EndpointId"`
 	Env        []EnvVar   `json:"Env"`
 	GitConfig  *GitConfig `json:"GitConfig"`
+	// Webhook and polling settings, kept as Portainer sent them
+	AutoUpdate json.RawMessage `json:"AutoUpdate"`
 }
 
 func (c *Client) GetStack(stackID int) (*StackDetail, error) {
@@ -142,13 +145,18 @@ func (c *Client) GetStack(stackID int) (*StackDetail, error) {
 	return &stack, nil
 }
 
+// UpdateStackPayload replaces a git stack's settings: Portainer takes every
+// field as given, so an update must send back the ones it does not change.
+// Without AutoUpdate, the stack loses its webhook and polling.
 type UpdateStackPayload struct {
-	Env                       []EnvVar    `json:"env"`
-	RepositoryReferenceName   string      `json:"repositoryReferenceName"`
-	RepositoryAuthentication  bool        `json:"repositoryAuthentication"`
-	RepositoryGitCredentialID int         `json:"repositoryGitCredentialID,omitempty"`
-	Prune                     bool        `json:"prune"`
-	PullImage                 bool        `json:"pullImage"`
+	Env                       []EnvVar        `json:"env"`
+	RepositoryReferenceName   string          `json:"repositoryReferenceName"`
+	RepositoryAuthentication  bool            `json:"repositoryAuthentication"`
+	RepositoryGitCredentialID int             `json:"repositoryGitCredentialID,omitempty"`
+	TLSSkipVerify             bool            `json:"tlsSkipVerify"`
+	AutoUpdate                json.RawMessage `json:"autoUpdate,omitempty"`
+	Prune                     bool            `json:"prune"`
+	PullImage                 bool            `json:"pullImage"`
 }
 
 func (c *Client) UpdateStackEnv(stackID, endpointID int, payload UpdateStackPayload) error {
