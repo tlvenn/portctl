@@ -30,15 +30,19 @@ func (c *Client) GetCurrentUser() (*User, error) {
 }
 
 func (c *Client) ListGitCredentials(userID int) ([]GitCredential, error) {
-	url := fmt.Sprintf("%s/api/users/%d/gitcredentials", c.BaseURL, userID)
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
+	// Portainer 2.45 moved them to shared credentials; older versions keep them per user
+	var lastErr error
+	for _, path := range []string{"/api/cloud/gitcredentials", fmt.Sprintf("/api/users/%d/gitcredentials", userID)} {
+		req, err := http.NewRequest("GET", c.BaseURL+path, nil)
+		if err != nil {
+			return nil, err
+		}
+		var creds []GitCredential
+		if err := c.do(req, &creds); err != nil {
+			lastErr = err
+			continue
+		}
+		return creds, nil
 	}
-
-	var creds []GitCredential
-	if err := c.do(req, &creds); err != nil {
-		return nil, fmt.Errorf("failed to list git credentials: %w", err)
-	}
-	return creds, nil
+	return nil, fmt.Errorf("failed to list git credentials: %w", lastErr)
 }

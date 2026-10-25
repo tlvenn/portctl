@@ -118,7 +118,8 @@ var envCmd = &cobra.Command{
 			payload.RepositoryReferenceName = detail.GitConfig.ReferenceName
 			payload.TLSSkipVerify = detail.GitConfig.TLSSkipVerify
 		}
-		if cfg.GitCredentialID != 0 {
+		// With a git source (Portainer 2.45) no credential: blank keeps what the stack has
+		if cfg.GitSourceID == 0 && cfg.GitCredentialID != 0 {
 			payload.RepositoryAuthentication = true
 			payload.RepositoryGitCredentialID = cfg.GitCredentialID
 		}

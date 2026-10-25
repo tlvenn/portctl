@@ -66,17 +66,20 @@ func (c *Client) FindStackByName(name string, endpointID int) (*Stack, error) {
 }
 
 type CreateStackPayload struct {
-	Name                      string          `json:"name"`
-	RepositoryURL             string          `json:"repositoryURL"`
-	RepositoryReferenceName   string          `json:"repositoryReferenceName"`
-	ComposeFile               string          `json:"composeFile"`
-	RepositoryAuthentication  bool            `json:"repositoryAuthentication"`
-	RepositoryGitCredentialID int             `json:"repositoryGitCredentialID,omitempty"`
-	AutoUpdate                *AutoUpdate     `json:"autoUpdate,omitempty"`
-	Env                       []EnvVar        `json:"env,omitempty"`
-	AdditionalFiles           []string        `json:"additionalFiles,omitempty"`
-	SupportRelativePath       bool            `json:"supportRelativePath"`
-	FilesystemPath            string          `json:"filesystemPath,omitempty"`
+	Name                      string      `json:"name"`
+	RepositoryURL             string      `json:"repositoryURL"`
+	RepositoryReferenceName   string      `json:"repositoryReferenceName"`
+	ComposeFile               string      `json:"composeFile"`
+	RepositoryAuthentication  bool        `json:"repositoryAuthentication,omitempty"`
+	RepositoryGitCredentialID int         `json:"repositoryGitCredentialID,omitempty"`
+	RepositoryUsername        string      `json:"repositoryUsername,omitempty"`
+	RepositoryPassword        string      `json:"repositoryPassword,omitempty"`
+	SourceID                  int         `json:"sourceId,omitempty"`
+	AutoUpdate                *AutoUpdate `json:"autoUpdate,omitempty"`
+	Env                       []EnvVar    `json:"env,omitempty"`
+	AdditionalFiles           []string    `json:"additionalFiles,omitempty"`
+	SupportRelativePath       bool        `json:"supportRelativePath"`
+	FilesystemPath            string      `json:"filesystemPath,omitempty"`
 }
 
 type AutoUpdate struct {
@@ -182,6 +185,8 @@ type RedeployPayload struct {
 	RepositoryReferenceName   string   `json:"repositoryReferenceName"`
 	RepositoryAuthentication  bool     `json:"repositoryAuthentication"`
 	RepositoryGitCredentialID int      `json:"repositoryGitCredentialID,omitempty"`
+	RepositoryUsername        string   `json:"repositoryUsername,omitempty"`
+	RepositoryPassword        string   `json:"repositoryPassword,omitempty"`
 	PullImage                 bool     `json:"pullImage"`
 	Env                       []EnvVar `json:"env"`
 }

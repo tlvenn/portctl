@@ -17,6 +17,9 @@ type Config struct {
 	GitRepo          string
 	GitBranch        string
 	GitCredentialID  int
+	GitSourceID      int    // Portainer 2.45+: the git source new stacks come from (it holds the credential)
+	GitUsername      string // with GitToken: the repo's credentials for new stacks
+	GitToken         string
 	RepoPath         string
 	FilesystemPath   string
 	EnvFile          string // KEY=VALUE file applied to stack env on deploy and redeploy
@@ -48,13 +51,15 @@ func Load() (*Config, error) {
 	}
 
 	cfg := &Config{
-		PortainerURL: strings.TrimRight(portainerURL, "/"),
-		APIKey:       apiKey,
+		PortainerURL:   strings.TrimRight(portainerURL, "/"),
+		APIKey:         apiKey,
 		GitRepo:        os.Getenv("PORTCTL_GIT_REPO"),
 		GitBranch:      os.Getenv("PORTCTL_GIT_BRANCH"),
 		RepoPath:       os.Getenv("PORTCTL_REPO_PATH"),
 		FilesystemPath: os.Getenv("PORTCTL_FILESYSTEM_PATH"),
 		EnvFile:        os.Getenv("PORTCTL_ENV_FILE"),
+		GitUsername:    os.Getenv("PORTCTL_GIT_USERNAME"),
+		GitToken:       os.Getenv("PORTCTL_GIT_TOKEN"),
 	}
 
 	// A relative env file is relative to the repo, like the stack directories
@@ -72,6 +77,14 @@ func Load() (*Config, error) {
 			return nil, fmt.Errorf("PORTCTL_ENDPOINT_ID must be a numeric ID, got %q", v)
 		}
 		cfg.EndpointID = id
+	}
+
+	if v := os.Getenv("PORTCTL_GIT_SOURCE_ID"); v != "" {
+		id, err := strconv.Atoi(v)
+		if err != nil {
+			return nil, fmt.Errorf("PORTCTL_GIT_SOURCE_ID must be a numeric ID, got %q", v)
+		}
+		cfg.GitSourceID = id
 	}
 
 	if v := os.Getenv("PORTCTL_GIT_CREDENTIAL_ID"); v != "" {

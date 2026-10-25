@@ -85,16 +85,25 @@ var deployCmd = &cobra.Command{
 		// Build payload
 		payload := client.CreateStackPayload{
 			Name:                    stackName,
-			RepositoryURL:          cfg.GitRepo,
+			RepositoryURL:           cfg.GitRepo,
 			RepositoryReferenceName: "refs/heads/" + cfg.GitBranch,
-			ComposeFile:            stackName + "/docker-compose.yml",
-			AutoUpdate:             &client.AutoUpdate{Webhook: webhookID},
-			Env:                    env,
-			SupportRelativePath:    true,
-			FilesystemPath:         cfg.FilesystemPath,
+			ComposeFile:             stackName + "/docker-compose.yml",
+			AutoUpdate:              &client.AutoUpdate{Webhook: webhookID},
+			Env:                     env,
+			SupportRelativePath:     true,
+			FilesystemPath:          cfg.FilesystemPath,
 		}
 
-		if cfg.GitCredentialID != 0 {
+		// Portainer 2.45: a stack comes from a git source, which holds the repo's credential (the
+		// inline URL and credentials are then ignored). Without one, a token, else a credential ID as
+		// on older versions.
+		if cfg.GitSourceID != 0 {
+			payload.SourceID = cfg.GitSourceID
+		} else if cfg.GitToken != "" {
+			payload.RepositoryAuthentication = true
+			payload.RepositoryUsername = cfg.GitUsername
+			payload.RepositoryPassword = cfg.GitToken
+		} else if cfg.GitCredentialID != 0 {
 			payload.RepositoryAuthentication = true
 			payload.RepositoryGitCredentialID = cfg.GitCredentialID
 		}

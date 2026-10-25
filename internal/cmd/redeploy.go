@@ -46,8 +46,15 @@ var redeployCmd = &cobra.Command{
 			Env:                     env,
 		}
 
-		// Include git credentials if configured
-		if cfg.GitCredentialID != 0 {
+		// Git credentials: none with a git source (blank keeps what the stack has, its source's
+		// credential), else the token, else the credential ID as on older versions
+		if cfg.GitSourceID != 0 {
+			// nothing to send
+		} else if cfg.GitToken != "" {
+			payload.RepositoryAuthentication = true
+			payload.RepositoryUsername = cfg.GitUsername
+			payload.RepositoryPassword = cfg.GitToken
+		} else if cfg.GitCredentialID != 0 {
 			payload.RepositoryAuthentication = true
 			payload.RepositoryGitCredentialID = cfg.GitCredentialID
 		}
