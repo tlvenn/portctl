@@ -118,14 +118,23 @@ var envCmd = &cobra.Command{
 			payload.RepositoryReferenceName = detail.GitConfig.ReferenceName
 			payload.TLSSkipVerify = detail.GitConfig.TLSSkipVerify
 		}
-		// With a git source (Portainer 2.45) no credential: blank keeps what the stack has
-		if cfg.GitSourceID == 0 && cfg.GitCredentialID != 0 {
+		// With a git source (Portainer 2.45), name it and send no credential: without it, the
+		// update writes "no authentication" into the source itself
+		if cfg.GitSourceID != 0 {
+			payload.SourceID = cfg.GitSourceID
+		} else if cfg.GitCredentialID != 0 {
 			payload.RepositoryAuthentication = true
 			payload.RepositoryGitCredentialID = cfg.GitCredentialID
 		}
 
 		if err := api.UpdateStackEnv(stack.ID, stack.EndpointID, payload); err != nil {
 			return err
+		}
+		// Should Portainer still clear the stack's copy of the source's credential, hand it back
+		if cfg.GitSourceID != 0 {
+			if err := api.EnsureStackGitCredential(stack.ID, cfg.GitSourceID); err != nil {
+				return err
+			}
 		}
 
 		fmt.Printf("Stack '%s' environment updated. Redeploy to apply: portctl redeploy %s\n", stackName, stackName)

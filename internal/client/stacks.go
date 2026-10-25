@@ -154,8 +154,9 @@ func (c *Client) GetStack(stackID int) (*StackDetail, error) {
 type UpdateStackPayload struct {
 	Env                       []EnvVar        `json:"env"`
 	RepositoryReferenceName   string          `json:"repositoryReferenceName"`
-	RepositoryAuthentication  bool            `json:"repositoryAuthentication"`
+	RepositoryAuthentication  bool            `json:"repositoryAuthentication,omitempty"`
 	RepositoryGitCredentialID int             `json:"repositoryGitCredentialID,omitempty"`
+	SourceID                  int             `json:"sourceID,omitempty"`
 	TLSSkipVerify             bool            `json:"tlsSkipVerify"`
 	AutoUpdate                json.RawMessage `json:"autoUpdate,omitempty"`
 	Prune                     bool            `json:"prune"`

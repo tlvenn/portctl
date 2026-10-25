@@ -59,6 +59,13 @@ var redeployCmd = &cobra.Command{
 			payload.RepositoryGitCredentialID = cfg.GitCredentialID
 		}
 
+		// The stack's copy of the source's credential, in case an env update dropped it
+		if cfg.GitSourceID != 0 {
+			if err := api.EnsureStackGitCredential(stack.ID, cfg.GitSourceID); err != nil {
+				return err
+			}
+		}
+
 		if err := api.RedeployStack(stack.ID, stack.EndpointID, payload); err != nil {
 			return err
 		}

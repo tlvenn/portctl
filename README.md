@@ -34,6 +34,8 @@ All configuration is via environment variables. Use a `.envrc` (with [direnv](ht
 | `PORTCTL_GIT_REPO` | — | Git repo URL for stack creation |
 | `PORTCTL_GIT_BRANCH` | `main` | Git branch to deploy from |
 | `PORTCTL_GIT_CREDENTIAL_ID` | — | Portainer git credential ID (run `portctl credentials` to find it) |
+| `PORTCTL_GIT_SOURCE_ID` | — | Portainer 2.45+: the git source new stacks are created from (the ID in its URL under GitOps > Sources). The source carries the credential: `deploy`, `redeploy` and `env` send none, and save the source again so the stack gets its copy. Takes precedence over the two below. |
+| `PORTCTL_GIT_USERNAME`, `PORTCTL_GIT_TOKEN` | — | A username and token sent with `deploy` and `redeploy`, for a Portainer that ignores `PORTCTL_GIT_CREDENTIAL_ID` and has no source |
 | `PORTCTL_ENDPOINT_ID` | auto-detected | Portainer endpoint ID (auto-discovers first local Docker endpoint). Override per-invocation with `--endpoint <name-or-id>` / `-e`. |
 | `PORTCTL_REPO_PATH` | — | Local path to the stacks repo (for webhook registration in `portainer-webhooks.json`) |
 | `PORTCTL_ENV_FILE` | — | `KEY=VALUE` file (relative to `PORTCTL_REPO_PATH`) applied to the stack env on `deploy` and `redeploy`. See [Shared parameters](#shared-parameters). |

@@ -113,6 +113,11 @@ var deployCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
+		if cfg.GitSourceID != 0 {
+			if err := api.EnsureStackGitCredential(stack.ID, cfg.GitSourceID); err != nil {
+				return err
+			}
+		}
 
 		fmt.Printf("Stack '%s' deployed successfully (ID: %d).\n", stack.Name, stack.ID)
 		fmt.Printf("Webhook ID: %s\n", webhookID)
